@@ -1,5 +1,6 @@
 import {seasonList} from './core.mjs';
 import {garmentKind} from './garment-art.mjs';
+import {validateShoppingEnvelope} from './shopping-crypto.mjs';
 
 export const PUBLIC_FIELDS=Object.freeze({
   id:'记录编号',name:'名称',category:'一级品类',subcategory:'二级品类',color:'颜色',
@@ -7,7 +8,8 @@ export const PUBLIC_FIELDS=Object.freeze({
 });
 export const OPTIONAL_FIELDS=Object.freeze({brand:'品牌',size:'尺码',scenes:'场景',care:'洗护',thickness:'厚度'});
 const text=value=>typeof value==='string'?value.trim().slice(0,500):'';
-export const snapshotContent=snapshot=>JSON.stringify({example:snapshot.example,fields:snapshot.fields,items:snapshot.items});
+export const publicContent=snapshot=>JSON.stringify({example:snapshot.example,fields:snapshot.fields,items:snapshot.items});
+export const snapshotContent=snapshot=>snapshot.shopping?JSON.stringify({public:publicContent(snapshot),shopping:snapshot.shopping}):publicContent(snapshot);
 
 // Construct from an allowlist. Never spread a private record into a public one.
 export function createPublicSnapshot(source,{fields=[],publishedAt=new Date().toISOString(),version=globalThis.crypto.randomUUID()}={}){
@@ -30,6 +32,10 @@ export function createPublicSnapshot(source,{fields=[],publishedAt=new Date().to
 export function validatePublicSnapshot(value){
   if(!value||value.format!=='wearwise-public'||value.schemaVersion!==1||!Array.isArray(value.items)||value.items.length>10000||!Array.isArray(value.fields)||typeof value.example!=='boolean')throw new Error('查询快照格式无效');
   const reconstructed=createPublicSnapshot({demo:value.example,items:value.items.map(i=>({...i,status:'在用'}))},{fields:value.fields.filter(f=>Object.hasOwn(OPTIONAL_FIELDS,f)),publishedAt:value.publishedAt,version:value.version});
+  if(Object.hasOwn(value,'shopping')){
+    reconstructed.shopping=validateShoppingEnvelope(value.shopping);
+    if(reconstructed.shopping.publicationVersion!==value.version)throw new Error('购衣数据与发布版本不一致');
+  }
   // Reject unexpected/private fields, even when called independently of the editor.
   const canonical=v=>JSON.stringify(v,(_,x)=>x&&typeof x==='object'&&!Array.isArray(x)?Object.fromEntries(Object.keys(x).sort().map(k=>[k,x[k]])):x);
   if(canonical(value)!==canonical(reconstructed))throw new Error('快照包含未允许的字段或无效值，请重新生成');
