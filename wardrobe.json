@@ -1,8 +1,8 @@
 {
   "format": "wearwise-public",
   "schemaVersion": 1,
-  "version": "8aebfbaa-3523-4609-9897-e67e8f89dc76",
-  "publishedAt": "2026-10-24T03:20:01.534Z",
+  "version": "dd4c8c95-e052-4f91-90ba-52b24bcc0e61",
+  "publishedAt": "2026-10-24T03:27:01.826Z",
   "example": true,
   "fields": [
     "id",

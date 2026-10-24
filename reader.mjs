@@ -54,7 +54,7 @@ function informationPage(){
 }
 function shoppingPage(){
   if(shopping)return shoppingView(shopping,{candidateStatus})+'<p><button class="btn small" data-action="shopping-lock">锁定购衣页</button></p>';
-  return `${heading('THOUGHTFUL ADDITIONS','购衣决策','购买计划与建议单独用密码保护，衣橱和概览可以直接查看。')}<section class="panel">${snapshot.shopping?'<form id="shopping-unlock"><label class="field"><span>购衣页密码</span><input name="password" type="password" required minlength="8" maxlength="256" autocomplete="current-password"></label><button class="btn primary" type="submit">解锁购衣页</button><p id="shopping-error" role="status"></p></form><p>密码只在当前设备用于解密，不会发送到 GitHub。刷新页面或锁定后需要重新输入。</p>':'<h3>购衣页尚未发布</h3><p>请在电脑的“偏好与数据”中设置购衣页密码，然后重新发布。计划与建议将加密后出现在这里。</p>'}</section>`;
+  return `${heading('THOUGHTFUL ADDITIONS','购衣决策','购买计划与建议单独用密码保护，衣橱和概览可以直接查看。')}<section class="panel">${snapshot.shopping?'<form id="shopping-unlock"><label class="field"><span>购衣页密码</span><input name="password" type="password" required minlength="4" maxlength="256" autocomplete="current-password"></label><button class="btn primary" type="submit">解锁购衣页</button><p id="shopping-error" role="status"></p></form><p>密码只在当前设备用于解密，不会发送到 GitHub。刷新页面或锁定后需要重新输入。</p>':'<h3>购衣页尚未发布</h3><p>请在电脑的“偏好与数据”中设置购衣页密码，然后重新发布。计划与建议将加密后出现在这里。</p>'}</section>`;
 }
 function shoppingDetail(id,analysis=false){
   if(!shopping)return;const candidate=shopping.candidates.find(c=>c.id===id);if(!candidate)return;

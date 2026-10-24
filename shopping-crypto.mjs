@@ -30,7 +30,7 @@ export function validateShoppingEnvelope(value){
   return structuredClone(value);
 }
 async function key(password,salt,usages){
-  if(typeof password!=='string'||password.length<8||password.length>256)throw new Error('密码请使用8至256位字符');
+  if(typeof password!=='string'||password.length<4||password.length>256)throw new Error('密码请使用4至256位字符');
   const material=await crypto.subtle.importKey('raw',encoder.encode(password),'PBKDF2',false,['deriveKey']);
   return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:ITERATIONS,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,usages);
 }
