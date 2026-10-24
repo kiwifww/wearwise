@@ -35,3 +35,7 @@
 .publish-fields{padding:16px;border:1px solid var(--line);border-radius:12px;margin:18px 0}.publish-fields strong{font-size:12px}.publish-notice{background:#f5f0e5;border-radius:8px;padding:10px 13px;color:#805f34!important}.publish-setup{margin:20px 0}.publish-setup summary{cursor:pointer;padding:10px 0}.publish-setup .field{max-width:460px;margin-bottom:12px}.publish-consent{display:flex;align-items:flex-start;gap:9px;line-height:1.8;margin:20px 0;font-size:12px}.publish-consent input{margin-top:5px}.publish-error{color:#a24f35!important}#pages-publish-panel .row{flex-wrap:wrap}#pages-publish-panel a.btn{text-decoration:none}
 
 .card-brand{font-size:11px;line-height:1.6;color:var(--green);margin:-2px 0 8px;overflow-wrap:anywhere}
+
+/* Bilingual product identity shared by editor and phone reader. */
+.brand-zh{display:block;font-family:Inter,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:22px;font-weight:600;letter-spacing:2px;line-height:1.25}.brand-en{display:block;font-size:19px;letter-spacing:-.4px;line-height:1.25;margin-top:2px}.mobile-brand-name{display:flex;flex-direction:column;gap:2px;line-height:1.1}.mobile-brand-name strong{font-family:Inter,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:18px;font-weight:600;letter-spacing:1px}.mobile-brand-name small{font-size:11px;letter-spacing:.3px;color:#7b8c7b}
+@media(min-width:601px) and (max-width:820px){.mobile-brand{display:flex;align-items:center;gap:7px;color:#3b5746}.mobile-brand img{width:27px;height:27px}.breadcrumb{display:none}}
