@@ -67,12 +67,12 @@ export function garmentKind(i={}){
   if(sub==='T恤'&&/长袖/.test(text))return 'longtee';
   if(sub==='针织衫'&&/短袖/.test(text))return 'shortsweater';
   if(/连帽|帽衫/.test(text))return 'hoodie';
-  return ({'衬衫':'shirt','T恤':'tee','背心':'vest','针织衫':'sweater','卫衣':'sweatshirt','外套':'bomber','西装':'blazer'})[sub]||'tee';
+  return ({'衬衫':'shirt','T恤':'tee','背心':'vest','针织衫':'sweater','开衫':'cardigan','卫衣':'sweatshirt','外套':'bomber','薄外套':'bomber','厚外套':'coat','西装':'blazer'})[sub]||'tee';
  };
  const exact={'牛仔裤':'jeans','休闲裤':'chinos','西裤':'chinos','运动裤':'joggers','短裤':'shorts','半身裙':'skirt','连衣裙':'dress','连体裤':'jumpsuit','运动鞋':'sneakers','休闲鞋':'sneakers','乐福鞋':'loafers','皮鞋':'loafers','靴子':'boots','凉鞋':'sandals','拖鞋':'slippers','包':'bag','帽子':'hat','围巾':'scarf','腰带':'belt'};
  if(sub==='休闲裤'&&/牛仔/.test(text))return 'jeans';
  if(exact[sub])return exact[sub];
- if(['衬衫','T恤','背心','针织衫','卫衣','外套','西装'].includes(sub))return top();
+ if(['衬衫','T恤','背心','针织衫','开衫','卫衣','外套','薄外套','厚外套','西装'].includes(sub))return top();
  const legacy={shirt:'shirt',tee:'tee',vest:'vest',knit:'sweater',jeans:'jeans',trousers:'chinos',coat:'coat',jacket:'blazer',sneakers:'sneakers',loafers:'loafers',dress:'dress',bag:'bag'};
  if(i.category==='下装')return /短裤/.test(text)?'shorts':/裙/.test(text)?'skirt':/牛仔/.test(text)?'jeans':/运动|束脚/.test(text)?'joggers':'chinos';
  if(i.category==='鞋')return /靴/.test(text)?'boots':/凉鞋/.test(text)?'sandals':/拖鞋/.test(text)?'slippers':'sneakers';

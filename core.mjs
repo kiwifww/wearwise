@@ -1,5 +1,5 @@
 export const CATEGORY_TREE = {
-  '上装':['T恤','衬衫','背心','针织衫','卫衣','外套','西装','其他上装'],
+  '上装':['T恤','衬衫','背心','针织衫','开衫','卫衣','薄外套','厚外套','西装','其他上装'],
   '下装':['牛仔裤','休闲裤','西裤','运动裤','工装裤','短裤','半身裙','其他下装'],
   '连衣裙/连体装':['连衣裙','连体裤','其他连体装'],
   '鞋':['运动鞋','休闲鞋','乐福鞋','皮鞋','靴子','凉鞋','拖鞋','其他鞋'],
@@ -21,13 +21,13 @@ export function seasonList(item) {
   return SEASONS.filter(s=>typeof item.season==='string'&&item.season.includes(s));
 }
 export const seasonLabel = item => seasonList(item).join(' / ')||'未填写';
-export const categoryRole = item => item.category==='外套'||item.category==='上装'&&['外套','西装'].includes(item.subcategory)?'外套':item.category;
+export const categoryRole = item => item.category==='外套'||item.category==='上装'&&['外套','薄外套','厚外套','开衫','西装'].includes(item.subcategory)?'外套':item.category;
 export function normalizeItem(item) {
   const r={...item};
   if(r.category==='外套'){r.category='上装';r.subcategory='外套';}
   if(!r.subcategory){
     const inferred={'shirt':'衬衫','tee':'T恤','knit':'针织衫','jeans':'牛仔裤','trousers':r.name?.includes('西裤')?'西裤':'休闲裤','coat':'外套','jacket':'外套','sneakers':'运动鞋','loafers':'乐福鞋','dress':'连衣裙','bag':'包'}[r.illustration];
-    r.subcategory=CATEGORY_TREE[r.category]?.includes(inferred)?inferred:'';
+    r.subcategory=CATEGORY_TREE[r.category]?.includes(inferred)||r.category==='上装'&&inferred==='外套'?inferred:'';
   }
   r.seasons=seasonList(r);r.season=seasonLabel(r);
   if(r.location&&!['主','次'].includes(r.location)){
@@ -156,7 +156,7 @@ export function validateBackup(value) {
   const ids=new Set();
   for(const [group,list] of [['items',value.items],['candidates',value.candidates]]) for(const item of list) {
     if(!plain(item)||typeof item.id!=='string'||!item.id||ids.has(item.id)||typeof item.name!=='string'||![...CATEGORIES,...(value.schemaVersion===1?['外套']:[])].includes(item.category)&&!(item.status==='草稿'&&item.category==='')||!Object.hasOwn(COLORS,item.color)||!Array.isArray(item.scenes)||!Array.isArray(item.photos)||!Array.isArray(item.feedback)||!['在用','草稿','已移出', '考虑中','已购买','不再考虑'].includes(item.status)) throw new Error('衣物记录无效或存在重复标识');
-    if(value.schemaVersion===2&&(!Array.isArray(item.seasons)||item.seasons.some(s=>!SEASONS.includes(s))||new Set(item.seasons).size!==item.seasons.length||typeof item.subcategory!=='string'||item.subcategory&&!CATEGORY_TREE[item.category]?.includes(item.subcategory)||!['主','次',''].includes(item.location)))throw new Error('细分类、季节或收纳位置无效');
+    if(value.schemaVersion===2&&(!Array.isArray(item.seasons)||item.seasons.some(s=>!SEASONS.includes(s))||new Set(item.seasons).size!==item.seasons.length||typeof item.subcategory!=='string'||item.subcategory&&!CATEGORY_TREE[item.category]?.includes(item.subcategory)&&!(item.category==='上装'&&item.subcategory==='外套')||!['主','次',''].includes(item.location)))throw new Error('细分类、季节或收纳位置无效');
     if(item.fit!=null&&typeof item.fit!=='string'||item.styleTags!=null&&(!Array.isArray(item.styleTags)||!item.styleTags.every(s=>typeof s==='string')))throw new Error('版型或风格字段无效');
     if(group==='items'&&!['在用','草稿','已移出'].includes(item.status)||group==='candidates'&&!['考虑中','已购买','不再考虑'].includes(item.status)) throw new Error('衣物状态与记录类型不符');
     ids.add(item.id);
