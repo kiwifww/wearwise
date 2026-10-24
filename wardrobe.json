@@ -1,0 +1,198 @@
+{
+  "format": "wearwise-public",
+  "schemaVersion": 1,
+  "version": "31e8f5ba-97dc-4f1d-8b3e-2e5ba7f91236",
+  "publishedAt": "2026-10-24T02:41:25.520Z",
+  "example": true,
+  "fields": [
+    "id",
+    "name",
+    "category",
+    "subcategory",
+    "color",
+    "fabric",
+    "fit",
+    "seasons",
+    "usage",
+    "previewKind"
+  ],
+  "items": [
+    {
+      "id": "demo-1",
+      "name": "棉质衬衫米白色",
+      "category": "上装",
+      "subcategory": "衬衫",
+      "color": "米白",
+      "fabric": "100%棉",
+      "fit": "常规",
+      "seasons": [
+        "春季"
+      ],
+      "usage": "常穿",
+      "previewKind": "shirt"
+    },
+    {
+      "id": "demo-2",
+      "name": "直筒牛仔裤深蓝",
+      "category": "下装",
+      "subcategory": "牛仔裤",
+      "color": "深蓝",
+      "fabric": "棉98% 氨纶2%",
+      "fit": "常规",
+      "seasons": [
+        "春季",
+        "夏季",
+        "秋季",
+        "冬季"
+      ],
+      "usage": "常穿",
+      "previewKind": "jeans"
+    },
+    {
+      "id": "demo-3",
+      "name": "轻薄卡其风衣",
+      "category": "上装",
+      "subcategory": "外套",
+      "color": "卡其",
+      "fabric": "棉60% 聚酯纤维40%",
+      "fit": "常规",
+      "seasons": [
+        "秋季"
+      ],
+      "usage": "常穿",
+      "previewKind": "windbreaker"
+    },
+    {
+      "id": "demo-4",
+      "name": "低帮运动鞋白色",
+      "category": "鞋",
+      "subcategory": "运动鞋",
+      "color": "白色",
+      "fabric": "织物鞋面",
+      "fit": "常规",
+      "seasons": [
+        "春季",
+        "夏季",
+        "秋季",
+        "冬季"
+      ],
+      "usage": "常穿",
+      "previewKind": "sneakers"
+    },
+    {
+      "id": "demo-5",
+      "name": "圆领针织衫灰色",
+      "category": "上装",
+      "subcategory": "针织衫",
+      "color": "灰色",
+      "fabric": "羊毛30% 腈纶70%",
+      "fit": "常规",
+      "seasons": [
+        "秋季"
+      ],
+      "usage": "偶尔穿",
+      "previewKind": "sweater"
+    },
+    {
+      "id": "demo-6",
+      "name": "直筒西裤黑色",
+      "category": "下装",
+      "subcategory": "西裤",
+      "color": "黑色",
+      "fabric": "聚酯纤维80% 粘胶20%",
+      "fit": "常规",
+      "seasons": [
+        "春季"
+      ],
+      "usage": "常穿",
+      "previewKind": "chinos"
+    },
+    {
+      "id": "demo-7",
+      "name": "工装外套橄榄绿",
+      "category": "上装",
+      "subcategory": "外套",
+      "color": "绿色",
+      "fabric": "100%棉",
+      "fit": "常规",
+      "seasons": [
+        "秋季"
+      ],
+      "usage": "偶尔穿",
+      "previewKind": "bomber"
+    },
+    {
+      "id": "demo-8",
+      "name": "牛津衬衫浅蓝色",
+      "category": "上装",
+      "subcategory": "衬衫",
+      "color": "蓝色",
+      "fabric": "100%棉",
+      "fit": "常规",
+      "seasons": [
+        "春季"
+      ],
+      "usage": "常穿",
+      "previewKind": "shirt"
+    },
+    {
+      "id": "demo-9",
+      "name": "皮革乐福鞋棕色",
+      "category": "鞋",
+      "subcategory": "乐福鞋",
+      "color": "棕色",
+      "fabric": "牛皮",
+      "fit": "常规",
+      "seasons": [
+        "春季",
+        "夏季",
+        "秋季",
+        "冬季"
+      ],
+      "usage": "偶尔穿",
+      "previewKind": "loafers"
+    },
+    {
+      "id": "demo-10",
+      "name": "休闲长裤米白色",
+      "category": "下装",
+      "subcategory": "休闲裤",
+      "color": "米白",
+      "fabric": "棉70% 亚麻30%",
+      "fit": "常规",
+      "seasons": [
+        "夏季"
+      ],
+      "usage": "偶尔穿",
+      "previewKind": "chinos"
+    },
+    {
+      "id": "demo-11",
+      "name": "基础圆领 T 恤黑色",
+      "category": "上装",
+      "subcategory": "T恤",
+      "color": "黑色",
+      "fabric": "100%棉",
+      "fit": "常规",
+      "seasons": [
+        "夏季"
+      ],
+      "usage": "常穿",
+      "previewKind": "tee"
+    },
+    {
+      "id": "demo-12",
+      "name": "短袖针织衫粉色",
+      "category": "上装",
+      "subcategory": "针织衫",
+      "color": "粉色",
+      "fabric": "粘胶70% 锦纶30%",
+      "fit": "常规",
+      "seasons": [
+        "夏季"
+      ],
+      "usage": "闲置",
+      "previewKind": "shortsweater"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+/* Query-specific notices only. Layout, cards, illustrations and dialogs use styles.css. */
+.publication{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 0 18px;color:var(--muted);font-size:11px;line-height:1.8;overflow-wrap:anywhere}
+#refresh-error{font-size:12px;color:#a2533b;line-height:1.8}
+#refresh-error:empty{display:none}
+#reader .sync-status:disabled{opacity:.6;cursor:wait}
+#reader .brand-name,#reader .mobile-brand{white-space:nowrap}
+#reader .clothing-card h3{overflow-wrap:anywhere}
+#reader .sidebar-bottom .nav-item{width:100%}
+#item-dialog .modal-footer .subtle{margin:0 8px}
+@media(max-width:600px){.publication{font-size:10px;margin-bottom:16px}#reader .searchbox input,#reader .filter-panel select{font-size:16px}#reader .filter-panel label{min-width:0}#reader .filter-panel select{max-width:100%}}
