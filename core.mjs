@@ -1,3 +1,4 @@
+import {normalizeAiAdviceList} from './ai-advice.mjs';
 export const CATEGORY_TREE = {
   '上装':['T恤','衬衫','背心','针织衫','开衫','卫衣','薄外套','厚外套','西装','其他上装'],
   '下装':['牛仔裤','休闲裤','西裤','运动裤','工装裤','短裤','半身裙','其他下装'],
@@ -150,6 +151,7 @@ function validHistory(h){
   return plain(h)&&text(h.id)&&text(h.at)&&text(h.verdict)&&text(h.summary)&&Array.isArray(h.dimensions)&&h.dimensions.every(d=>plain(d)&&text(d.name)&&text(d.status)&&text(d.text))&&Array.isArray(h.combos)&&h.combos.every(c=>plain(c)&&strings(c.ids)&&strings(c.names)&&c.ids.length===c.names.length&&text(c.reason))&&Array.isArray(h.similar)&&h.similar.every(s=>plain(s)&&text(s.id)&&text(s.name)&&text(s.reason))&&Array.isArray(h.feedback)&&h.feedback.every(f=>plain(f)&&text(f.id)&&text(f.name)&&text(f.text))&&strings(h.missing)&&plain(h.context)&&validAmount(h.context.budget)&&(!h.candidateSnapshot||plain(h.candidateSnapshot)&&text(h.candidateSnapshot.name)&&text(h.candidateSnapshot.color));
 }
 export function validateBackup(value) {
+  if(value?.aiAdvice!==undefined)normalizeAiAdviceList(value.aiAdvice);
   if(!plain(value)||![1,2].includes(value.schemaVersion)||!Array.isArray(value.items)||!Array.isArray(value.candidates)||!Array.isArray(value.plans)||!plain(value.prefs)) throw new Error('备份格式或版本不受支持');
   if(value.items.length>5000||value.candidates.length>5000||value.plans.length>5000) throw new Error('备份记录数量超出范围');
   if(!Number.isSafeInteger(value.revision)||value.revision<0||typeof value.demo!=='boolean')throw new Error('备份元数据无效');

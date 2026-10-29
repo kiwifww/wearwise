@@ -1,5 +1,6 @@
 import {emptyState,validateBackup,seasonList} from './core.mjs';
 import {garmentKind} from './garment-art.mjs';
+import {normalizeAiAdviceList} from './ai-advice.mjs';
 const ITERATIONS=600000,encoder=new TextEncoder();
 const base64=bytes=>{let text='';for(const byte of bytes)text+=String.fromCharCode(byte);return btoa(text);};
 const bytes=text=>Uint8Array.from(atob(text),c=>c.charCodeAt(0));
@@ -19,6 +20,7 @@ export function shoppingState(source){
   const planKeys=['id','title','status','budget','scene','season','category','subcategory','purpose','currency','priority','reason','completeness','createdAt','updatedAt'];
   result.plans=original.plans.map(p=>Object.fromEntries(planKeys.filter(k=>Object.hasOwn(p,k)).map(k=>[k,p[k]])));
   result.prefs=Object.fromEntries(Object.keys(result.prefs).map(k=>[k,structuredClone(original.prefs[k]??result.prefs[k])]));
+  if(original.aiAdvice!==undefined)result.aiAdvice=normalizeAiAdviceList(original.aiAdvice);
   return validateBackup(result);
 }
 export function validateShoppingEnvelope(value){
