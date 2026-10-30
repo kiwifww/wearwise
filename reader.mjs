@@ -3,7 +3,7 @@ import {decryptShopping} from './shopping-crypto.mjs';
 import {shoppingView,evaluationView} from './shopping-view.mjs';
 import {wardrobeInsights,UNFILLED} from './insights.mjs';
 import {insightPanels} from './insights-view.mjs';
-import {icon,heading,introCard,clothingCards,recordHero} from './wardrobe-view.mjs';
+import {icon,heading,clothingCards,recordHero,filterSummary} from './wardrobe-view.mjs';
 import {validatePublicSnapshot,PUBLIC_FIELDS,OPTIONAL_FIELDS} from './public-snapshot.mjs';
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -42,7 +42,7 @@ function filterPanel(){
 function wardrobePage(){
   const wear=items.filter(i=>i.usage==='常穿').length,idle=items.filter(i=>i.usage==='闲置').length,scenes=new Set(items.flatMap(i=>i.scenes||[]));
   const stats=[['全部衣物',items.length,'已记录的在用衣物','wardrobe',''],['常穿单品',wear,'日常反复选择的喜欢','heart','常穿'],['闲置单品',idle,'也许值得重新发现','box','闲置'],['覆盖场景',snapshot.fields.includes('scenes')?scenes.size:'—',snapshot.fields.includes('scenes')?'标签可重叠计数':'本次未公开场景','spark','overview']];
-  return `${heading('MY WARDROBE','我的衣橱','每一件都值得被看见，每一次搭配都有迹可循。')}${introCard()}<div class="stats">${stats.map(([label,n,foot,ico,id])=>`<button class="stat ${filters.usage&&filters.usage===id?'active':''}" data-action="stat-filter" data-id="${id}"><span class="stat-label">${label}${icon(ico,16)}</span><div class="stat-value">${n}<small>${id==='overview'?'个':'件'}</small></div><div class="stat-foot">${foot}</div></button>`).join('')}</div><div class="section-heading"><h2>衣橱里的日常 <span id="result-count">${filteredItems().length} 件单品</span></h2><button class="btn small ${sortByCategory?'soft':''}" data-action="sort-category" aria-pressed="${sortByCategory}">${icon('list',14)}${sortByCategory?'按分类排列中':'按分类排列'}</button></div><div class="wardrobe-toolbar"><div class="category-tabs">${['',...CATEGORIES].map(category=>`<button class="tab ${filters.category===category?'active':''}" data-action="category" data-id="${esc(category)}" aria-pressed="${filters.category===category}">${esc(category||'全部')}</button>`).join('')}</div><div class="toolbar-right"><label class="searchbox">${icon('search',15)}<input id="wardrobe-search" type="search" aria-label="搜索衣物" placeholder="搜索衣物、面料、颜色…" value="${esc(filters.search)}"></label><button class="btn icon-only" data-action="toggle-filters" aria-label="展开筛选" aria-expanded="${showFilters}">${icon('filter',17)}</button><div class="view-buttons"><button data-action="view-grid" class="${!listView?'active':''}" aria-label="网格视图">${icon('grid',14)}</button><button data-action="view-list" class="${listView?'active':''}" aria-label="列表视图">${icon('list',15)}</button></div></div></div>${subcategories()}${showFilters?filterPanel():''}<div id="wardrobe-content">${wardrobeList()}</div>`;
+  return `${heading('MY WARDROBE','我的衣橱','每一件都值得被看见，每一次搭配都有迹可循。')}<div class="stats">${stats.map(([label,n,foot,ico,id])=>`<button class="stat ${filters.usage&&filters.usage===id?'active':''}" data-action="stat-filter" data-id="${id}"><span class="stat-label">${label}${icon(ico,16)}</span><div class="stat-value">${n}<small>${id==='overview'?'个':'件'}</small></div><div class="stat-foot">${foot}</div></button>`).join('')}</div><div class="section-heading"><h2>衣橱里的日常 <span id="result-count">${filteredItems().length} 件单品</span></h2><button class="btn small ${sortByCategory?'soft':''}" data-action="sort-category" aria-pressed="${sortByCategory}">${icon('list',14)}${sortByCategory?'按分类排列中':'按分类排列'}</button></div><div class="wardrobe-toolbar"><div class="category-tabs">${['',...CATEGORIES].map(category=>`<button class="tab ${filters.category===category?'active':''}" data-action="category" data-id="${esc(category)}" aria-pressed="${filters.category===category}">${esc(category||'全部')}</button>`).join('')}</div><div class="toolbar-right"><label class="searchbox">${icon('search',15)}<input id="wardrobe-search" type="search" aria-label="搜索衣物" placeholder="搜索衣物、面料、颜色…" value="${esc(filters.search)}"></label><button class="btn icon-only" data-action="toggle-filters" aria-label="展开筛选" aria-expanded="${showFilters}">${icon('filter',17)}</button><div class="view-buttons"><button data-action="view-grid" class="${!listView?'active':''}" aria-label="网格视图" aria-pressed="${!listView}">${icon('grid',14)}</button><button data-action="view-list" class="${listView?'active':''}" aria-label="列表视图" aria-pressed="${listView}">${icon('list',15)}</button></div></div></div>${subcategories()}<div id="active-filter-summary">${filterSummary(filters)}</div>${showFilters?filterPanel():''}<div id="wardrobe-content">${wardrobeList()}</div>`;
 }
 function insightsPage(){
   const stats=wardrobeInsights(items);
@@ -103,7 +103,8 @@ function action(e){
   if(shopping&&['evaluate','candidate-detail'].includes(action))return shoppingDetail(id,action==='evaluate');
   if(action==='category'){filters.category=id;filters.subcategory='';return render();}
   if(action==='subcategory'){filters.subcategory=id;return render();}
-  if(action==='clear-filters'){filters=blankFilters();return render();}
+  if(action==='remove-filter'){const key=target.dataset.key;if(Object.hasOwn(filters,key)){filters[key]=key==='status'?'在用':'';if(key==='category')filters.subcategory='';}return render();}
+ if(action==='clear-filters'){filters=blankFilters();return render();}
   if(action==='toggle-filters'){showFilters=!showFilters;return render();}
   if(action==='sort-category'){sortByCategory=!sortByCategory;return render();}
   if(action==='view-grid'||action==='view-list'){listView=action==='view-list';return render();}
@@ -118,7 +119,7 @@ function action(e){
   if(action==='close-detail')return dialog.close();
   if(action==='detail-prev'||action==='detail-next'){const selected=filteredItems(),index=selected.findIndex(i=>i.id===detailId),item=selected[index+(action==='detail-prev'?-1:1)];if(item)detail(item.id);}
 }
-root.addEventListener('input',e=>{if(e.target.id==='wardrobe-search'){filters.search=e.target.value;document.querySelector('#wardrobe-content').innerHTML=wardrobeList();document.querySelector('#result-count').textContent=`${filteredItems().length} 件单品`;}});
+root.addEventListener('input',e=>{if(e.target.id==='wardrobe-search'){filters.search=e.target.value;document.querySelector('#wardrobe-content').innerHTML=wardrobeList();document.querySelector('#result-count').textContent=`${filteredItems().length} 件单品`;document.querySelector('#active-filter-summary').innerHTML=filterSummary(filters);}});
 root.addEventListener('change',e=>{if(e.target.dataset.filter){filters[e.target.dataset.filter]=e.target.value;render();}});
 root.addEventListener('click',action);dialog.addEventListener('click',action);
 root.addEventListener('submit',async e=>{
