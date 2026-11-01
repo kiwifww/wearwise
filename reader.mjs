@@ -1,3 +1,5 @@
+import {computerAPI,readConnection} from './remote-connection.mjs';
+import {onlineView} from './online-advice.mjs';
 import {CATEGORIES,CATEGORY_TREE,COLORS,SEASONS,USAGES,seasonList,seasonLabel,evaluate} from './core.mjs';
 import {decryptShopping} from './shopping-crypto.mjs';
 import {shoppingView,evaluationView} from './shopping-view.mjs';
@@ -9,6 +11,7 @@ import {validatePublicSnapshot,PUBLIC_FIELDS,OPTIONAL_FIELDS} from './public-sna
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const root=document.querySelector('#reader'),dialog=document.querySelector('#item-dialog');
 const blankFilters=()=>({search:'',category:'',subcategory:'',color:'',season:'',usage:'',brand:'',scene:''});
+let onlineProblem='',liveComputer=false;
 let snapshot,items=[],loading=false,page=location.hash.slice(1)||'wardrobe',filters=blankFilters(),showFilters=false,listView=false,sortByCategory=true,detailId='',shopping,candidateStatus='考虑中',unlocking=false,unlockEpoch=0;
 const date=t=>new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',dateStyle:'medium',timeStyle:'short'}).format(new Date(t));
 const options=(list,value,blank)=>`<option value="">${blank}</option>${list.map(x=>`<option value="${esc(x)}" ${x===value?'selected':''}>${esc(x===UNFILLED?'未填写':x)}</option>`).join('')}`;
@@ -50,10 +53,11 @@ function insightsPage(){
 }
 function informationPage(){
   const labels={...PUBLIC_FIELDS,...OPTIONAL_FIELDS};
-  return `${heading('PUBLISHED WARDROBE','发布信息','手机与电脑查询同一份已发布衣橱。')}<div class="settings-wrap"><section class="panel"><h3>当前查询版本</h3><p>更新时间：${esc(date(snapshot.publishedAt))}<br>版本：${esc(snapshot.version)}<br>在用衣物：${items.length} 件</p><button class="btn primary" data-action="refresh" ${loading?'disabled':''}>${icon('clock',15)}${loading?'正在刷新…':'刷新数据'}</button></section><section class="panel"><h3>已公开的衣物信息</h3><p>${snapshot.fields.map(key=>esc(labels[key]||key)).join('、')}。</p><p>页面仅供查询。请在电脑编辑完成后重新发布，手机即可读取新版本。</p></section></div>`;
+  return `${heading('WEARWISE CONNECTION','连接与设置','本网站内完成衣柜、统计和AI购衣建议。')}${onlineView('settings')}<div class="settings-wrap"><section class="panel"><h3>当前查询版本</h3><p>更新时间：${esc(date(snapshot.publishedAt))}<br>版本：${esc(snapshot.version)}<br>在用衣物：${items.length} 件</p><button class="btn primary" data-action="refresh" ${loading?'disabled':''}>${icon('clock',15)}${loading?'正在刷新…':'刷新数据'}</button></section><section class="panel"><h3>已公开的衣物信息</h3><p>${snapshot.fields.map(key=>esc(labels[key]||key)).join('、')}。</p><p>页面仅供查询。请在电脑编辑完成后重新发布，手机即可读取新版本。</p></section></div>`;
 }
-function shoppingPage(){
-  if(shopping)return shoppingView(shopping,{candidateStatus})+'<p><button class="btn small" data-action="shopping-lock">锁定购衣页</button></p>';
+function shoppingPage(){return `${heading('SHOPPING ADVICE','购衣建议','粘贴淘宝链接，由电脑读取并结合你的主衣柜分析。')}${onlineView()}${!readConnection()?'<details><summary>查看以前发布的加密购衣记录</summary>'+legacyShoppingPage()+'</details>':''}`;}
+function legacyShoppingPage(){
+  if(shopping)return shoppingView(shopping,{candidateStatus}).replaceAll('<mobile-ai-entry></mobile-ai-entry>','')+'<p><button class="btn small" data-action="shopping-lock">锁定购衣页</button></p>';
   return `${heading('THOUGHTFUL ADDITIONS','购衣决策','购买计划与建议单独用密码保护，衣橱和概览可以直接查看。')}<section class="panel">${snapshot.shopping?'<form id="shopping-unlock"><label class="field"><span>购衣页密码</span><input name="password" type="password" required minlength="4" maxlength="256" autocomplete="current-password"></label><button class="btn primary" type="submit">解锁购衣页</button><p id="shopping-error" role="status"></p></form><p>密码只在当前设备用于解密，不会发送到 GitHub。刷新页面或锁定后需要重新输入。</p>':'<h3>购衣页尚未发布</h3><p>请在电脑的“偏好与数据”中设置购衣页密码，然后重新发布。计划与建议将加密后出现在这里。</p>'}</section>`;
 }
 function shoppingDetail(id,analysis=false){
@@ -66,9 +70,9 @@ function lockShopping(){shopping=undefined;unlockEpoch++;if(dialog.open)dialog.c
 function render(){
   if(page==='plans')page='shopping';
   if(!['wardrobe','insights','shopping','information'].includes(page))page='wardrobe';
-  const names={wardrobe:'我的衣橱',insights:'衣橱概览',shopping:'购衣决策',information:'发布信息'};
+  const names={wardrobe:'我的衣橱',insights:'衣橱概览',shopping:'购衣决策',information:'连接与设置'};
   const nav=(key,label,ico,count)=>`<button class="nav-item ${page===key?'active':''}" data-nav="${key}" aria-label="${label}" ${page===key?'aria-current="page"':''}>${icon(ico,19)}<span>${label}</span>${count!=null?`<span class="count">${count}</span>`:''}</button>`;
-  root.innerHTML=`<div class="layout"><aside class="sidebar"><div class="brand"><img src="./icon.svg" alt=""><div><div class="brand-name"><span class="brand-zh">一柜样</span><span class="brand-en">WearWise</span></div><small>LESS, BUT BETTER</small></div></div><div class="nav-label">我的衣物</div>${nav('wardrobe','我的衣橱','wardrobe',items.length)}${nav('insights','衣橱概览','chart')}<div class="nav-label">未来添置</div>${nav('shopping','购衣决策','spark')}<div class="sidebar-bottom">${nav('information','发布信息','info')}<div class="sidebar-note"><strong>${icon('leaf',14)} 让衣橱，更懂你</strong>留下喜欢的，穿好拥有的。<br>每一次添置，都多一点思考。</div></div><button class="nav-item mobile-settings ${page==='information'?'active':''}" data-nav="information" style="display:none">${icon('info',19)}<span>发布信息</span></button></aside><main class="main"><header class="topbar"><div class="breadcrumb">我的空间 <span>/</span><strong>${names[page]}</strong></div><div class="mobile-brand"><img src="./icon.svg" alt=""><span class="mobile-brand-name"><strong>一柜样</strong><small>WearWise</small></span></div><div class="top-right"><span class="date">${new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',month:'long',day:'numeric',weekday:'long'}).format(new Date())}</span><button class="local-label sync-status" data-action="refresh" aria-label="刷新数据" ${loading?'disabled':''}><i class="local-dot"></i>${loading?'更新中…':'已发布 · 刷新'}</button><div class="avatar" aria-label="个人衣橱">我</div></div></header><div class="content"><div class="publication"><span>更新于 ${esc(date(snapshot.publishedAt))}</span><span title="${esc(snapshot.version)}">版本 ${esc(snapshot.version.slice(0,8))}</span></div>${snapshot.example?`<div class="demo-banner">${icon('info',15)}<span>当前是虚构示例衣橱，展示内容并非你的真实衣物。</span></div>`:''}<p id="refresh-error" role="status"></p>${({wardrobe:wardrobePage,insights:insightsPage,shopping:shoppingPage,information:informationPage})[page]()}<div class="footer-note">一柜样 WearWise · 好好穿衣，慢慢添置</div></div></main></div>`;
+  root.innerHTML=`<div class="layout"><aside class="sidebar"><div class="brand"><img src="./icon.svg" alt=""><div><div class="brand-name"><span class="brand-zh">一柜样</span><span class="brand-en">WearWise</span></div><small>LESS, BUT BETTER</small></div></div><div class="nav-label">我的衣物</div>${nav('wardrobe','我的衣橱','wardrobe',items.length)}${nav('insights','衣橱概览','chart')}<div class="nav-label">未来添置</div>${nav('shopping','购衣建议','spark')}<div class="sidebar-bottom">${nav('information','连接与设置','info')}<div class="sidebar-note"><strong>${icon('leaf',14)} 让衣橱，更懂你</strong>留下喜欢的，穿好拥有的。<br>每一次添置，都多一点思考。</div></div><button class="nav-item mobile-settings ${page==='information'?'active':''}" data-nav="information" style="display:none">${icon('info',19)}<span>连接与设置</span></button></aside><main class="main"><header class="topbar"><div class="breadcrumb">我的空间 <span>/</span><strong>${names[page]}</strong></div><div class="mobile-brand"><img src="./icon.svg" alt=""><span class="mobile-brand-name"><strong>一柜样</strong><small>WearWise</small></span></div><div class="top-right"><span class="date">${new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',month:'long',day:'numeric',weekday:'long'}).format(new Date())}</span><button class="local-label sync-status" data-action="refresh" aria-label="刷新数据" ${loading?'disabled':''}><i class="local-dot"></i>${loading?'更新中…':'已发布 · 刷新'}</button><div class="avatar" aria-label="个人衣橱">我</div></div></header><div class="content"><div class="note-box" role="status">${esc(liveComputer?'已连接电脑 · 当前显示实时主衣柜':onlineProblem||'当前显示发布历史；首次在“连接与设置”配对电脑，即可在本网站读取商品和生成AI建议。')} <button class="btn small" data-nav="shopping">输入链接获取AI建议</button></div><div class="publication"><span>更新于 ${esc(date(snapshot.publishedAt))}</span><span title="${esc(snapshot.version)}">版本 ${esc(snapshot.version.slice(0,8))}</span></div>${snapshot.example?`<div class="demo-banner">${icon('info',15)}<span>当前是虚构示例衣橱，展示内容并非你的真实衣物。</span></div>`:''}<p id="refresh-error" role="status"></p>${({wardrobe:wardrobePage,insights:insightsPage,shopping:shoppingPage,information:informationPage})[page]()}<div class="footer-note">一柜样 WearWise · 好好穿衣，慢慢添置</div></div></main></div>`;
   document.title=`一柜样 WearWise · ${names[page]}`;
 }
 function detail(id){
@@ -82,10 +86,12 @@ function detail(id){
 async function load(){
   if(loading)return;loading=true;if(snapshot)render();
   try{
+    let live=null;onlineProblem='';liveComputer=false;
+    if(readConnection())try{const w=await computerAPI('/api/wardrobe');live=validatePublicSnapshot({format:'wearwise-public',schemaVersion:1,version:w.version,publishedAt:w.publishedAt,example:false,fields:w.fields,items:w.items});liveComputer=true;}catch(e){onlineProblem=e.message+'；暂显示最近发布的历史，AI需连接电脑。';}
     const url=new URL('./wardrobe.json',location.href);url.searchParams.set('refresh',Date.now());
-    const response=await fetch(url,{cache:'no-store',credentials:'omit'});
-    if(!response.ok)throw new Error(response.status===404?'尚未发布衣橱，请先在电脑上完成发布。':'暂时无法读取衣橱，请稍后刷新。');
-    const next=validatePublicSnapshot(await response.json());shopping=undefined;unlockEpoch++;snapshot=next;items=next.items.map(item=>({...item,status:'在用'}));loading=false;render();if(dialog.open)dialog.close();dialog.innerHTML='';
+    const response=live?null:await fetch(url,{cache:'no-store',credentials:'omit'});
+    if(response&&!response.ok)throw new Error(response.status===404?'尚未发布衣橱，请先在电脑上完成发布。':'暂时无法读取衣橱，请稍后刷新。');
+    const next=live||validatePublicSnapshot(await response.json());shopping=undefined;unlockEpoch++;snapshot=next;items=next.items.map(item=>({...item,status:'在用'}));loading=false;render();if(dialog.open)dialog.close();dialog.innerHTML='';
   }catch(error){
     loading=false;
     if(snapshot){render();document.querySelector('#refresh-error').textContent='刷新失败，仍显示本次已读取的版本。请检查网络后重试。';}
@@ -130,4 +136,5 @@ root.addEventListener('submit',async e=>{
   catch(error){message.textContent=error.message;}finally{unlocking=false;button.disabled=false;}
 });
 window.addEventListener('hashchange',()=>{page=location.hash.slice(1)||'wardrobe';if(snapshot)render();});
+window.addEventListener('wearwise-connection-change',()=>void load());
 void load();
