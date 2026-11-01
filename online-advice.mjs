@@ -1,7 +1,8 @@
 import {computerAPI,readConnection,clearConnection,saveConnection,connectionProblem} from './remote-connection.mjs?v=20261101-pairing2';
 export const onlineView=(mode='advice')=>`<wearwise-online mode="${mode}"></wearwise-online>`;
 const id=()=>crypto.randomUUID();
-const costStatus=b=>b.limitsEnabled===false?`本地费用上限已关闭；累计参考记录 ${b.reserved?.toFixed(2)??'未知'} 元（非实际扣费），按DeepSeek实际用量计费。`:`累计预留 ${b.reserved?.toFixed(2)??'未知'} / ${b.cap?.toFixed(2)??'未知'} 元。${b.reason||b.error||''}`;
+const weekStatus=b=>b.weeklyLimit!=null?`本周已用 ${b.weeklyUsed} / ${b.weeklyLimit} 次，剩余 ${b.weeklyRemaining} 次；每周一零点（北京时间）重置。失败占一次，不自动重连或重试AI请求。`:'';
+const costStatus=b=>weekStatus(b)+( b.limitsEnabled===false?`本地费用上限已关闭；累计参考记录 ${b.reserved?.toFixed(2)??'未知'} 元（非实际扣费），按DeepSeek实际用量计费。`:`累计预留 ${b.reserved?.toFixed(2)??'未知'} / ${b.cap?.toFixed(2)??'未知'} 元。${b.reason||b.error||''}`);
 if(typeof customElements!=='undefined'&&!customElements.get('wearwise-online'))customElements.define('wearwise-online',class extends HTMLElement{
   connectedCallback(){
     const advice=this.getAttribute('mode')!=='settings';
@@ -36,7 +37,7 @@ if(typeof customElements!=='undefined'&&!customElements.get('wearwise-online'))c
     if(this.active||this.readSubmitting||this.submitting||s.busy)problems.push('商品读取或AI任务正在进行，请等待原任务完成');
     if(!s.keyConfigured)problems.push('请在电脑后台设置并加密保存API密钥');
     if(!s.context)problems.push(s.contextError||'尚未连接主衣柜，请检查电脑后台');
-    if(!s.budget?.available){const b=s.budget||{};problems.push((b.error||b.reason||'调用额度不可用')+`。累计预留 ${b.reserved?.toFixed(2)??'未知'} / ${b.cap?.toFixed(2)??'未知'} 元，每次需预留0.10元；请在电脑 http://127.0.0.1:4402/open-app 的“AI费用控制”核对上限，再刷新生成条件`);}
+    if(!s.budget?.available){const b=s.budget||{};problems.push(b.weeklyLimit!=null&&b.weeklyRemaining===0?weekStatus(b)+(b.reason||'本周次数已用完'):(b.error||b.reason||'调用额度不可用')+`。累计预留 ${b.reserved?.toFixed(2)??'未知'} / ${b.cap?.toFixed(2)??'未知'} 元，每次需预留0.10元；请在电脑 http://127.0.0.1:4402/open-app 的“AI费用控制”核对上限，再刷新生成条件`);}
     if(this.product?.stage!=='complete')problems.push('请先成功读取商品');
     if(!this.q('confirm').checked)problems.push('请核对商品和衣柜摘要，再勾选同意发送');
     return problems;
