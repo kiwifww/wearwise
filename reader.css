@@ -8,3 +8,12 @@
 #reader .sidebar-bottom .nav-item{width:100%}
 #item-dialog .modal-footer .subtle{margin:0 8px}
 @media(max-width:600px){.publication{font-size:10px;margin-bottom:16px}#reader .searchbox input,#reader .filter-panel select{font-size:16px}#reader .filter-panel label{min-width:0}#reader .filter-panel select{max-width:100%}}
+wearwise-online{display:block;min-width:0;overflow-wrap:anywhere}
+wearwise-online [hidden]{display:none!important}
+wearwise-online .btn{max-width:100%;white-space:normal;overflow-wrap:anywhere;text-align:left}
+wearwise-online input,wearwise-online select,wearwise-online textarea{max-width:100%;min-width:0}
+wearwise-online [data-history]{display:grid;gap:8px;margin-top:12px;min-width:0}
+wearwise-online [data-history] .btn{width:100%;justify-content:flex-start}
+wearwise-online .check{display:block;margin:14px 0;line-height:1.7}
+wearwise-online [data-variants] label{display:block;margin:10px 0}
+@media(max-width:600px){wearwise-online input,wearwise-online select,wearwise-online textarea{font-size:16px}}
