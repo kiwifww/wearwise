@@ -1,5 +1,5 @@
 import {computerAPI,readConnection} from './remote-connection.mjs?v=20261101-pairing2';
-import {onlineView} from './online-advice.mjs?v=20261102-week10';
+import {onlineView} from './online-advice.mjs?v=20261102-v12';
 import {CATEGORIES,CATEGORY_TREE,COLORS,SEASONS,USAGES,seasonList,seasonLabel,evaluate} from './core.mjs';
 import {decryptShopping} from './shopping-crypto.mjs';
 import {shoppingView,evaluationView} from './shopping-view.mjs';
@@ -11,7 +11,7 @@ import {validatePublicSnapshot,PUBLIC_FIELDS,OPTIONAL_FIELDS} from './public-sna
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const root=document.querySelector('#reader'),dialog=document.querySelector('#item-dialog');
 const blankFilters=()=>({search:'',category:'',subcategory:'',color:'',season:'',usage:'',brand:'',scene:''});
-let onlineProblem='',liveComputer=false;
+let onlineProblem='',liveComputer=false;const pageScroll={};
 let snapshot,items=[],loading=false,page=location.hash.slice(1)||'wardrobe',filters=blankFilters(),showFilters=false,listView=false,sortByCategory=true,detailId='',shopping,candidateStatus='考虑中',unlocking=false,unlockEpoch=0;
 const date=t=>new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',dateStyle:'medium',timeStyle:'short'}).format(new Date(t));
 const options=(list,value,blank)=>`<option value="">${blank}</option>${list.map(x=>`<option value="${esc(x)}" ${x===value?'selected':''}>${esc(x===UNFILLED?'未填写':x)}</option>`).join('')}`;
@@ -49,11 +49,11 @@ function wardrobePage(){
 }
 function insightsPage(){
   const stats=wardrobeInsights(items);
-  return `${heading('KNOW YOUR WARDROBE','衣橱概览','从品类、品牌、季节和使用习惯了解你的衣橱。')}<div class="panel"><div class="eyebrow">已记录的在用衣物</div><div class="stat-value">${stats.total}<small>件</small></div><p>按最近成功发布的在用衣物统计，占比以 ${stats.total} 件为基数。点击任意统计行可查看对应衣物。</p></div>${insightPanels(stats,{fields:snapshot.fields})}`;
+  return `${heading('KNOW YOUR WARDROBE','衣橱概览','从品类、品牌、季节和使用习惯了解你的衣橱。')}<div class="panel"><div class="eyebrow">已记录的在用衣物</div><div class="stat-value">${stats.total}<small>件</small></div><p>${liveComputer?'按电脑实时主衣柜统计，':'按上次发布的历史衣柜统计，'}占比以 ${stats.total} 件为基数。点击任意统计行可查看对应衣物。</p></div>${insightPanels(stats,{fields:snapshot.fields})}`;
 }
 function informationPage(){
   const labels={...PUBLIC_FIELDS,...OPTIONAL_FIELDS};
-  return `${heading('WEARWISE CONNECTION','连接与设置','本网站内完成衣柜、统计和AI购衣建议。')}${onlineView('settings')}<div class="settings-wrap"><section class="panel"><h3>当前查询版本</h3><p>更新时间：${esc(date(snapshot.publishedAt))}<br>版本：${esc(snapshot.version)}<br>在用衣物：${items.length} 件</p><button class="btn primary" data-action="refresh" ${loading?'disabled':''}>${icon('clock',15)}${loading?'正在刷新…':'刷新数据'}</button></section><section class="panel"><h3>已公开的衣物信息</h3><p>${snapshot.fields.map(key=>esc(labels[key]||key)).join('、')}。</p><p>页面仅供查询。请在电脑编辑完成后重新发布，手机即可读取新版本。</p></section></div>`;
+  return `${heading('WEARWISE CONNECTION','连接与设置','本网站内完成衣柜、统计和AI购衣建议。')}${onlineView('settings')}<div class="settings-wrap"><section class="panel"><h3>当前查询版本</h3><p>更新时间：${esc(date(snapshot.publishedAt))}<br>版本：${esc(snapshot.version)}<br>在用衣物：${items.length} 件</p><button class="btn primary" data-action="refresh" ${loading?'disabled':''}>${icon('clock',15)}${loading?'正在刷新…':'刷新数据'}</button></section><section class="panel"><h3>已公开的衣物信息</h3><p>${snapshot.fields.map(key=>esc(labels[key]||key)).join('、')}。</p><p>页面仅供查询。实时连接时，电脑保存后刷新即可更新；断开时展示最后发布的历史快照。</p></section></div>`;
 }
 function shoppingPage(){return `${heading('SHOPPING ADVICE','购衣建议','粘贴淘宝链接，由电脑读取并结合你的主衣柜分析。')}${onlineView()}${!readConnection()?'<details><summary>查看以前发布的加密购衣记录</summary>'+legacyShoppingPage()+'</details>':''}`;}
 function legacyShoppingPage(){
@@ -72,8 +72,8 @@ function render(){
   if(!['wardrobe','insights','shopping','information'].includes(page))page='wardrobe';
   const names={wardrobe:'我的衣橱',insights:'衣橱概览',shopping:'购衣决策',information:'连接与设置'};
   const nav=(key,label,ico,count)=>`<button class="nav-item ${page===key?'active':''}" data-nav="${key}" aria-label="${label}" ${page===key?'aria-current="page"':''}>${icon(ico,19)}<span>${label}</span>${count!=null?`<span class="count">${count}</span>`:''}</button>`;
-  root.innerHTML=`<div class="layout"><aside class="sidebar"><div class="brand"><img src="./icon.svg" alt=""><div><div class="brand-name"><span class="brand-zh">一柜样</span><span class="brand-en">WearWise</span></div><small>LESS, BUT BETTER</small></div></div><div class="nav-label">我的衣物</div>${nav('wardrobe','我的衣橱','wardrobe',items.length)}${nav('insights','衣橱概览','chart')}<div class="nav-label">未来添置</div>${nav('shopping','购衣建议','spark')}<div class="sidebar-bottom">${nav('information','连接与设置','info')}<div class="sidebar-note"><strong>${icon('leaf',14)} 让衣橱，更懂你</strong>留下喜欢的，穿好拥有的。<br>每一次添置，都多一点思考。</div></div><button class="nav-item mobile-settings ${page==='information'?'active':''}" data-nav="information" style="display:none">${icon('info',19)}<span>连接与设置</span></button></aside><main class="main"><header class="topbar"><div class="breadcrumb">我的空间 <span>/</span><strong>${names[page]}</strong></div><div class="mobile-brand"><img src="./icon.svg" alt=""><span class="mobile-brand-name"><strong>一柜样</strong><small>WearWise</small></span></div><div class="top-right"><span class="date">${new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',month:'long',day:'numeric',weekday:'long'}).format(new Date())}</span><button class="local-label sync-status" data-action="refresh" aria-label="刷新数据" ${loading?'disabled':''}><i class="local-dot"></i>${loading?'更新中…':'已发布 · 刷新'}</button><div class="avatar" aria-label="个人衣橱">我</div></div></header><div class="content"><div class="note-box" role="status">${esc(liveComputer?'已连接电脑 · 当前显示实时主衣柜':onlineProblem||'当前显示发布历史；首次在“连接与设置”配对电脑，即可在本网站读取商品和生成AI建议。')} <button class="btn small" data-nav="shopping">输入链接获取AI建议</button></div><div class="publication"><span>更新于 ${esc(date(snapshot.publishedAt))}</span><span title="${esc(snapshot.version)}">版本 ${esc(snapshot.version.slice(0,8))}</span></div>${snapshot.example?`<div class="demo-banner">${icon('info',15)}<span>当前是虚构示例衣橱，展示内容并非你的真实衣物。</span></div>`:''}<p id="refresh-error" role="status"></p>${({wardrobe:wardrobePage,insights:insightsPage,shopping:shoppingPage,information:informationPage})[page]()}<div class="footer-note">一柜样 WearWise · 好好穿衣，慢慢添置</div></div></main></div>`;
-  document.title=`一柜样 WearWise · ${names[page]}`;
+  root.innerHTML=`<div class="layout"><aside class="sidebar"><div class="brand"><img src="./icon.svg" alt=""><div><div class="brand-name"><span class="brand-zh">一柜样</span><span class="brand-en">WearWise</span></div><small>LESS, BUT BETTER</small></div></div><div class="nav-label">我的衣物</div>${nav('wardrobe','我的衣橱','wardrobe',items.length)}${nav('insights','衣橱概览','chart')}<div class="nav-label">未来添置</div>${nav('shopping','购衣建议','spark')}<div class="sidebar-bottom">${nav('information','连接与设置','info')}<div class="sidebar-note"><strong>${icon('leaf',14)} 让衣橱，更懂你</strong>留下喜欢的，穿好拥有的。<br>每一次添置，都多一点思考。</div></div><button class="nav-item mobile-settings ${page==='information'?'active':''}" data-nav="information" style="display:none">${icon('info',19)}<span>连接与设置</span></button></aside><main class="main"><header class="topbar"><div class="breadcrumb">我的空间 <span>/</span><strong>${names[page]}</strong></div><div class="mobile-brand"><img src="./icon.svg" alt=""><span class="mobile-brand-name"><strong>一柜样</strong><small>WearWise</small></span></div><div class="top-right"><span class="date">${new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Shanghai',month:'long',day:'numeric',weekday:'long'}).format(new Date())}</span><button class="local-label sync-status" data-action="refresh" aria-label="刷新数据" ${loading?'disabled':''}><i class="local-dot"></i>${loading?'更新中…':liveComputer?'实时 · 刷新':'历史 · 刷新'}</button><div class="avatar" aria-label="个人衣橱">我</div></div></header><div class="content"><div class="note-box" role="status">${esc(liveComputer?'已连接电脑 · 当前显示实时主衣柜':onlineProblem||'当前显示发布历史；首次在“连接与设置”配对电脑，即可在本网站读取商品和生成AI建议。')} <button class="btn small" data-nav="shopping">输入链接获取AI建议</button></div><div class="publication"><span>更新于 ${esc(date(snapshot.publishedAt))}</span><span title="${esc(snapshot.version)}">版本 ${esc(snapshot.version.slice(0,8))}</span></div>${snapshot.example?`<div class="demo-banner">${icon('info',15)}<span>当前是虚构示例衣橱，展示内容并非你的真实衣物。</span></div>`:''}<p id="refresh-error" role="status"></p>${({wardrobe:wardrobePage,insights:insightsPage,shopping:shoppingPage,information:informationPage})[page]()}<div class="footer-note">一柜样 WearWise · 好好穿衣，慢慢添置</div></div></main></div>`;
+  document.title=`一柜样 WearWise · ${names[page]}`;requestAnimationFrame(()=>window.scrollTo(0,pageScroll[page]||0));
 }
 function detail(id){
   const item=items.find(i=>i.id===id);if(!item)return;
@@ -98,7 +98,7 @@ async function load(){
     else root.innerHTML=`<main class="boot">暂时无法打开衣橱<span>${esc(error.message)}</span><button class="btn primary" data-action="refresh">重新读取</button></main>`;
   }
 }
-function navigate(next){page=next;if(location.hash.slice(1)!==next)location.hash=next;else render();}
+function navigate(next){pageScroll[page]=window.scrollY;try{sessionStorage.setItem('wearwise-reader-view',JSON.stringify({filters,showFilters,listView,sortByCategory,scroll:window.scrollY}));}catch{}page=next;if(location.hash.slice(1)!==next)location.hash=next;else render();}
 function action(e){
   const nav=e.target.closest('[data-nav]');if(nav)return navigate(nav.dataset.nav);
   const target=e.target.closest('[data-action]');if(!target)return;
@@ -138,3 +138,7 @@ root.addEventListener('submit',async e=>{
 window.addEventListener('hashchange',()=>{page=location.hash.slice(1)||'wardrobe';if(snapshot)render();});
 window.addEventListener('wearwise-connection-change',()=>void load());
 void load();
+
+window.addEventListener('wearwise-open-item',e=>{if(items.some(i=>i.id===e.detail))detail(e.detail);});
+
+try{const saved=JSON.parse(sessionStorage.getItem('wearwise-reader-view')||'null');if(saved){for(const key of Object.keys(filters))if(typeof saved.filters?.[key]==='string')filters[key]=saved.filters[key];showFilters=saved.showFilters===true;listView=saved.listView===true;sortByCategory=saved.sortByCategory!==false;}}catch{}

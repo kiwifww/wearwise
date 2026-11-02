@@ -17,3 +17,9 @@ wearwise-online [data-history] .btn{width:100%;justify-content:flex-start}
 wearwise-online .check{display:block;margin:14px 0;line-height:1.7}
 wearwise-online [data-variants] label{display:block;margin:10px 0}
 @media(max-width:600px){wearwise-online input,wearwise-online select,wearwise-online textarea{font-size:16px}}
+
+/* v1.2: compact daily connection, complete diagnostics remain in settings. */
+wearwise-online[mode="advice"]>section:first-child h2,wearwise-online[mode="advice"]>section:first-child>ol,wearwise-online[mode="advice"]>section:first-child>button,wearwise-online[mode="advice"]>section:first-child>details,wearwise-online[mode="advice"]>section:first-child>p:not([data-status]){display:none}
+wearwise-online[mode="advice"]>section:first-child{padding:14px 18px}wearwise-online [hidden]{display:none!important}
+
+wearwise-online [data-history]>.btn{display:block;width:100%;text-align:left;margin:10px 0;padding:16px;white-space:normal;line-height:1.6}wearwise-online [data-product] h3{font-size:20px;line-height:1.5}wearwise-online [data-advice] .panel{box-shadow:none}wearwise-online [data-advice] .verdict{padding:16px;border-radius:10px;background:#edf3eb}wearwise-online [data-advice] .verdict.negative{background:#f5ece7}
