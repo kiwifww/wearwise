@@ -1,7 +1,7 @@
 import {mobileEntryView} from './mobile-ai-entry.mjs';
 import {direction,itemRecord} from './core.mjs';
 import {aiAdviceView} from './ai-advice.mjs';
-import {heading,icon,image,tags} from './wardrobe-view.mjs';
+import {heading,icon,image,tags} from './wardrobe-view.mjs?v=watercolor-a1';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=i=>i.price===''||i.price==null?'未记录价格':(i.currency==='CNY'?'¥':esc(i.currency)+' ')+Number(i.price).toLocaleString('zh-CN');
 const writes=new Set(['new-direction','add-candidate','edit-plan','plan-direction','plan-candidate','complete-plan','cancel-plan']);

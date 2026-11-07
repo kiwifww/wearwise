@@ -5,7 +5,7 @@ import {decryptShopping} from './shopping-crypto.mjs';
 import {shoppingView,evaluationView} from './shopping-view.mjs';
 import {wardrobeInsights,UNFILLED} from './insights.mjs';
 import {insightPanels} from './insights-view.mjs';
-import {icon,heading,clothingCards,recordHero,filterSummary} from './wardrobe-view.mjs';
+import {icon,heading,clothingCards,recordHero,filterSummary} from './wardrobe-view.mjs?v=watercolor-a1';
 import {validatePublicSnapshot,PUBLIC_FIELDS,OPTIONAL_FIELDS} from './public-snapshot.mjs';
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

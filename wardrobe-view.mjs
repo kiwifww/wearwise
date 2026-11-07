@@ -1,4 +1,4 @@
-import {garment} from './garment-art.mjs';
+import {garment} from './garment-art.mjs?v=watercolor-a1';
 import {COLORS,seasonLabel} from './core.mjs';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const icon=(name,size=18)=>{

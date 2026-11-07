@@ -1,5 +1,5 @@
 import {emptyState,validateBackup,seasonList} from './core.mjs';
-import {garmentKind} from './garment-art.mjs';
+import {garmentKind} from './garment-art.mjs?v=watercolor-a1';
 import {normalizeAiAdviceList} from './ai-advice.mjs';
 const ITERATIONS=600000,encoder=new TextEncoder();
 const base64=bytes=>{let text='';for(const byte of bytes)text+=String.fromCharCode(byte);return btoa(text);};

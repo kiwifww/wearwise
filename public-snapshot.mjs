@@ -1,5 +1,5 @@
 import {seasonList} from './core.mjs';
-import {garmentKind} from './garment-art.mjs';
+import {garmentKind} from './garment-art.mjs?v=watercolor-a1';
 import {validateShoppingEnvelope} from './shopping-crypto.mjs';
 
 export const PUBLIC_FIELDS=Object.freeze({
