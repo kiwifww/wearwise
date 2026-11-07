@@ -3,7 +3,18 @@ import {COLORS} from './core.mjs';
 let serial=0;
 const line=(d,c,w=1,o=1,extra='')=>`<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" opacity="${o}" stroke-linecap="round" stroke-linejoin="round" ${extra}/>`;
 const material={tee:'细棉布',polo:'珠地棉',vest:'运动针织',hoodie:'毛圈棉',cardigan:'绞花针织',bomber:'哑光斜纹',windbreaker:'轻薄织物',puffer:'蓬松绗缝',jeans:'靛蓝丹宁',chinos:'棉质斜纹',joggers:'柔软卫衣布',shorts:'棉麻混纺'};
-export function refined(kind,hex,view='0 0 320 300'){
+// Watercolor illustrations are neutral masters tinted from recorded colors at display time.
+const watercolorKinds=[['tee','polo','vest','shirt','cardigan','sweater','hoodie','sweatshirt','jeans','chinos','joggers','shorts','bomber','windbreaker','puffer','blazer'],['coat','longtee','shortsweater','cargo','skirt','dress','jumpsuit','sneakers','loafers','boots','sandals','slippers','bag','hat','scarf','belt']];
+export function refined(kind,hex){
+ const atlas=watercolorKinds.findIndex(list=>list.includes(kind));if(atlas<0)return vectorRefined(kind,hex);
+ const position=watercolorKinds[atlas].indexOf(kind),cell=313.5,x=(position%4)*cell,y=Math.floor(position/4)*cell;
+ const id='wc'+(++serial),rgb=hex.match(/[0-9a-f]{2}/gi).map(h=>parseInt(h,16)/255);
+ const channels=rgb.map(v=>({dark:Math.max(v*.38,v-.26),light:v+(1-v)*.22}));
+ const matrix=channels.map((c,i)=>[...Array.from({length:3},(_,j)=>j===i?c.light-c.dark:0),0,c.dark].join(' ')).join(' ')+' 0 0 0 1 0';
+ const name=kind==='longtee'?'长袖T恤':garments.find(g=>g.id===kind)?.name||'衣物';
+ return `<svg class="refined-art" viewBox="-26 -26 365.5 365.5" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${name}，水彩款式示意"><defs><filter id="${id}" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="${matrix}"/></filter></defs><g filter="url(#${id})"><svg width="${cell}" height="${cell}" viewBox="${x} ${y} ${cell} ${cell}" overflow="hidden"><image width="1254" height="1254" href="./watercolor-atlas-${atlas+1}.svg"/></svg></g></svg>`;
+}
+function vectorRefined(kind,hex,view='0 0 320 300'){
  const id=`r${++serial}`,{d,details:baseDetails}=shapes(kind),dark=shade(hex,-.38),ink=shade(hex,-.55),light=shade(hex,.55);
  const details=kind==='puffer'?baseDetails.replace(/<path d="(M91 [^"]+)" class="detail"/g,`<path d="$1" clip-path="url(#${id}-clip)" class="detail"`):baseDetails;
  const ref=n=>`url(#${id}-${n})`,knit=['cardigan','sweater','shortsweater'].includes(kind),denim=kind==='jeans',puff=kind==='puffer';
