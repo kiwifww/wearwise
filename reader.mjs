@@ -1,5 +1,5 @@
 import {computerAPI,readConnection} from './remote-connection.mjs?v=20261101-pairing2';
-import {onlineView} from './online-advice.mjs?v=20261107-overall-first';
+import {onlineView} from './online-advice.mjs?v=20261108-database-refinement';
 import {CATEGORIES,CATEGORY_TREE,COLORS,SEASONS,USAGES,seasonList,seasonLabel,evaluate} from './core.mjs';
 import {decryptShopping} from './shopping-crypto.mjs';
 import {shoppingView,evaluationView} from './shopping-view.mjs';
