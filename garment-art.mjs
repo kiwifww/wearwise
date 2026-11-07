@@ -12,7 +12,7 @@ export function refined(kind,hex){
  const channels=rgb.map(v=>({dark:Math.max(v*.38,v-.26),light:v+(1-v)*.22}));
  const matrix=channels.map((c,i)=>[...Array.from({length:3},(_,j)=>j===i?c.light-c.dark:0),0,c.dark].join(' ')).join(' ')+' 0 0 0 1 0';
  const name=kind==='longtee'?'长袖T恤':garments.find(g=>g.id===kind)?.name||'衣物';
- return `<svg class="refined-art" viewBox="-26 -26 365.5 365.5" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${name}，水彩款式示意"><defs><filter id="${id}" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="${matrix}"/></filter></defs><g filter="url(#${id})"><svg width="${cell}" height="${cell}" viewBox="${x} ${y} ${cell} ${cell}" overflow="hidden"><image width="1254" height="1254" href="./watercolor-atlas-${atlas+1}.svg"/></svg></g></svg>`;
+ return `<svg class="refined-art" viewBox="-26 -26 365.5 365.5" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${name}，水彩款式示意"><defs><filter id="${id}" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="${matrix}"/></filter></defs><g filter="url(#${id})"><svg width="${cell}" height="${cell}" viewBox="${x} ${y} ${cell} ${cell}" overflow="hidden"><image width="1254" height="1254" href="./watercolor-sheet-${atlas+1}.svg"/></svg></g></svg>`;
 }
 function vectorRefined(kind,hex,view='0 0 320 300'){
  const id=`r${++serial}`,{d,details:baseDetails}=shapes(kind),dark=shade(hex,-.38),ink=shade(hex,-.55),light=shade(hex,.55);
