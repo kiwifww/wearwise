@@ -1,4 +1,4 @@
-import {normalizeAiAdviceList} from './ai-advice.mjs';
+import {normalizeAiAdviceList} from './ai-advice.mjs?v=20261108-closet-labels';
 export const CATEGORY_TREE = {
   '上装':['T恤','衬衫','背心','针织衫','开衫','卫衣','薄外套','厚外套','西装','其他上装'],
   '下装':['牛仔裤','休闲裤','西裤','运动裤','工装裤','短裤','半身裙','其他下装'],
@@ -112,7 +112,7 @@ export function evaluate(candidate, state, context={}) {
   if(constraints.length) verdict='暂不建议';
   else if(missing.length||!candidate.fabric&&candidate.color==='未知'&&!candidate.fit) verdict='信息不足';
   else if(similar.length||!combos.length||incomplete.length||avoided||sceneMismatch) verdict='有条件考虑';
-  const summary=constraints[0]||missing[0]||(avoided?`你曾将${candidate.color}设为尽量避开的颜色，建议先确认本次是否仍然喜欢`:sceneMismatch?`已填场景未包含${scene}，建议确认本次用途`:similar.length?'已有用途可能接近的衣服，先比较版型、状态与替换需求':combos.length?`在当前已记录衣物中找到 ${combos.length} 组可试搭组合，购买前再确认试穿与洗护`:'当前没有足够的互补衣物资料，建议补充衣橱或确认用途');
+  const summary=constraints[0]||missing[0]||(avoided?`你曾将${candidate.color}设为尽量避开的颜色，建议先确认本次是否仍然喜欢`:sceneMismatch?`已填场景未包含${scene}，建议确认本次用途`:similar.length?'已有用途可能接近的衣服，先比较版型、状态与替换需求':combos.length?`在当前已记录衣物中找到 ${combos.length} 组可试搭组合，购买前再确认试穿与洗护`:'当前没有足够的互补衣物资料，建议补充衣柜或确认用途');
   const dimensions=[
     {name:'面料',status:candidate.fabric?'已知成分':'信息不足',text:candidate.fabric?`记录成分：${candidate.fabric}。${candidate.care&&candidate.care!=='未知'?`洗护：${candidate.care}。`:''}厚薄、弹性和实际肤感仍需确认，成分不代表完整穿着体验。`:'尚未填写成分。建议查看吊牌；照片不能确认面料、保暖或耐用程度。'},
     {name:'颜色',status:candidate.color==='未知'?'信息不足':avoided?'偏好提醒':'可参考',text:candidate.color==='未知'?'请在自然光下确认主色，再和已有衣物比较。':`${candidate.color}。${avoided?'与你尽量避开的颜色一致。':combos.length?colorReason(candidate.color,state.items.find(i=>i.id===combos[0].ids[0])?.color||'未知'): '当前缺少可比较的互补衣物。'}照片光线可能影响颜色。`},

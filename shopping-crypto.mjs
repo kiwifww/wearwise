@@ -1,6 +1,6 @@
-import {emptyState,validateBackup,seasonList} from './core.mjs';
-import {garmentKind} from './garment-art.mjs?v=watercolor-a1';
-import {normalizeAiAdviceList} from './ai-advice.mjs';
+import {emptyState,validateBackup,seasonList} from './core.mjs?v=20261108-closet-labels';
+import {garmentKind} from './garment-art.mjs?v=20261108-closet-labels';
+import {normalizeAiAdviceList} from './ai-advice.mjs?v=20261108-closet-labels';
 const ITERATIONS=600000,encoder=new TextEncoder();
 const base64=bytes=>{let text='';for(const byte of bytes)text+=String.fromCharCode(byte);return btoa(text);};
 const bytes=text=>Uint8Array.from(atob(text),c=>c.charCodeAt(0));
@@ -43,7 +43,7 @@ async function seal(value,password,publicationVersion){
 }
 async function unseal(envelope,password,expectedVersion){
   const value=validateShoppingEnvelope(envelope);
-  if(value.publicationVersion!==expectedVersion)throw new Error('购衣数据与衣橱版本不一致，请刷新后重新解锁');
+  if(value.publicationVersion!==expectedVersion)throw new Error('购衣数据与衣柜版本不一致，请刷新后重新解锁');
   try{
     const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:bytes(value.iv),additionalData:encoder.encode('WearWise shopping v1|'+expectedVersion),tagLength:128},await key(password,bytes(value.salt),['decrypt']),bytes(value.ciphertext));
     return JSON.parse(new TextDecoder().decode(plain));

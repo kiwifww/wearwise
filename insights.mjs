@@ -1,4 +1,4 @@
-import { active, seasonList, SEASONS, SCENES } from './core.mjs';
+import { active, seasonList, SEASONS, SCENES } from './core.mjs?v=20261108-closet-labels';
 
 export const UNFILLED='__unfilled';
 export function wardrobeInsights(items){

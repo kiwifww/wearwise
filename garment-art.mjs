@@ -1,7 +1,7 @@
-import {WATERCOLOR_KINDS} from './watercolor-assets.mjs';
+import {WATERCOLOR_KINDS} from './watercolor-assets.mjs?v=20261108-closet-labels';
 import './watercolor-lazy.mjs';
-import {garments,shapes,shade} from './garment-shapes.mjs';
-import {COLORS} from './core.mjs';
+import {garments,shapes,shade} from './garment-shapes.mjs?v=20261108-closet-labels';
+import {COLORS} from './core.mjs?v=20261108-closet-labels';
 let serial=0;
 const line=(d,c,w=1,o=1,extra='')=>`<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" opacity="${o}" stroke-linecap="round" stroke-linejoin="round" ${extra}/>`;
 const material={tee:'细棉布',polo:'珠地棉',vest:'运动针织',hoodie:'毛圈棉',cardigan:'绞花针织',bomber:'哑光斜纹',windbreaker:'轻薄织物',puffer:'蓬松绗缝',jeans:'靛蓝丹宁',chinos:'棉质斜纹',joggers:'柔软卫衣布',shorts:'棉麻混纺'};

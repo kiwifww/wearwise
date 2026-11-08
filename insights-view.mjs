@@ -1,4 +1,4 @@
-import {COLORS} from './core.mjs';
+import {COLORS} from './core.mjs?v=20261108-closet-labels';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function insightPanels(stats,{fields}={}){
  const row=(r,key,category='')=>`<button class="bar-row insight-row" data-action="insight-filter" data-key="${key}" data-category="${esc(category)}" data-id="${esc(r.value)}" aria-label="${esc(category?category+' / ':'')}${esc(r.label)}：${r.n} 件，查看衣物"><span class="insight-label">${esc(r.label)}</span><span class="bar-track"><span class="bar-fill" style="display:block;width:${r.n/Math.max(stats.total,1)*100}%;${key==='color'?`background:${COLORS[r.value]||'#a6b69b'};border:1px solid #00000010`:''}"></span></span><strong>${r.n}<small>件</small></strong><span class="insight-percent">${stats.total?Math.round(r.n/stats.total*100):0}%</span></button>`;

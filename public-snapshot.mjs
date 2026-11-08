@@ -1,6 +1,6 @@
-import {seasonList} from './core.mjs';
-import {garmentKind} from './garment-art.mjs?v=watercolor-a1';
-import {validateShoppingEnvelope} from './shopping-crypto.mjs';
+import {seasonList} from './core.mjs?v=20261108-closet-labels';
+import {garmentKind} from './garment-art.mjs?v=20261108-closet-labels';
+import {validateShoppingEnvelope} from './shopping-crypto.mjs?v=20261108-closet-labels';
 
 export const PUBLIC_FIELDS=Object.freeze({
   id:'记录编号',name:'名称',category:'一级品类',subcategory:'二级品类',color:'颜色',
@@ -13,7 +13,7 @@ export const snapshotContent=snapshot=>snapshot.shopping?JSON.stringify({public:
 
 // Construct from an allowlist. Never spread a private record into a public one.
 export function createPublicSnapshot(source,{fields=[],publishedAt=new Date().toISOString(),version=globalThis.crypto.randomUUID()}={}){
-  if(!source||!Array.isArray(source.items))throw new Error('没有可发布的衣橱');
+  if(!source||!Array.isArray(source.items))throw new Error('没有可发布的衣柜');
   if(!Array.isArray(fields)||fields.some(f=>!Object.hasOwn(OPTIONAL_FIELDS,f)))throw new Error('公开字段无效');
   if(!Number.isFinite(Date.parse(publishedAt))||!text(version))throw new Error('发布版本无效');
   const optional=Object.keys(OPTIONAL_FIELDS).filter(f=>fields.includes(f));
