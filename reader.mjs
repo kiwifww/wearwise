@@ -1,12 +1,12 @@
-import {computerAPI,readConnection} from './remote-connection.mjs?v=20261108-closet-labels';
-import {onlineView} from './online-advice.mjs?v=20261108-closet-labels';
-import {CATEGORIES,CATEGORY_TREE,COLORS,SEASONS,USAGES,seasonList,seasonLabel,evaluate} from './core.mjs?v=20261108-closet-labels';
-import {decryptShopping} from './shopping-crypto.mjs?v=20261108-closet-labels';
-import {shoppingView,evaluationView} from './shopping-view.mjs?v=20261108-closet-labels';
-import {wardrobeInsights,UNFILLED} from './insights.mjs?v=20261108-closet-labels';
-import {insightPanels} from './insights-view.mjs?v=20261108-closet-labels';
-import {icon,heading,clothingCards,recordHero,filterSummary} from './wardrobe-view.mjs?v=20261108-closet-labels';
-import {validatePublicSnapshot,PUBLIC_FIELDS,OPTIONAL_FIELDS} from './public-snapshot.mjs?v=20261108-closet-labels';
+import {computerAPI,readConnection} from './remote-connection.mjs?asset=62ff530ac2e91b77';
+import {onlineView} from './online-advice.mjs?asset=62ff530ac2e91b77';
+import {CATEGORIES,CATEGORY_TREE,COLORS,SEASONS,USAGES,seasonList,seasonLabel,evaluate} from './core.mjs?asset=62ff530ac2e91b77';
+import {decryptShopping} from './shopping-crypto.mjs?asset=62ff530ac2e91b77';
+import {shoppingView,evaluationView} from './shopping-view.mjs?asset=62ff530ac2e91b77';
+import {wardrobeInsights,UNFILLED} from './insights.mjs?asset=62ff530ac2e91b77';
+import {insightPanels} from './insights-view.mjs?asset=62ff530ac2e91b77';
+import {icon,heading,clothingCards,recordHero,filterSummary} from './wardrobe-view.mjs?asset=62ff530ac2e91b77';
+import {validatePublicSnapshot,PUBLIC_FIELDS,OPTIONAL_FIELDS} from './public-snapshot.mjs?asset=62ff530ac2e91b77';
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const root=document.querySelector('#reader'),dialog=document.querySelector('#item-dialog');

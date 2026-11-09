@@ -1,6 +1,6 @@
-import {emptyState,validateBackup,seasonList} from './core.mjs?v=20261108-closet-labels';
-import {garmentKind} from './garment-art.mjs?v=20261108-closet-labels';
-import {normalizeAiAdviceList} from './ai-advice.mjs?v=20261108-closet-labels';
+import {emptyState,validateBackup,seasonList} from './core.mjs?asset=62ff530ac2e91b77';
+import {garmentKind} from './garment-art.mjs?asset=62ff530ac2e91b77';
+import {normalizeAiAdviceList} from './ai-advice.mjs?asset=62ff530ac2e91b77';
 const ITERATIONS=600000,encoder=new TextEncoder();
 const base64=bytes=>{let text='';for(const byte of bytes)text+=String.fromCharCode(byte);return btoa(text);};
 const bytes=text=>Uint8Array.from(atob(text),c=>c.charCodeAt(0));

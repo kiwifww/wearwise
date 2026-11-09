@@ -1,6 +1,6 @@
-import {seasonList} from './core.mjs?v=20261108-closet-labels';
-import {garmentKind} from './garment-art.mjs?v=20261108-closet-labels';
-import {validateShoppingEnvelope} from './shopping-crypto.mjs?v=20261108-closet-labels';
+import {seasonList} from './core.mjs?asset=62ff530ac2e91b77';
+import {garmentKind} from './garment-art.mjs?asset=62ff530ac2e91b77';
+import {validateShoppingEnvelope} from './shopping-crypto.mjs?asset=62ff530ac2e91b77';
 
 export const PUBLIC_FIELDS=Object.freeze({
   id:'记录编号',name:'名称',category:'一级品类',subcategory:'二级品类',color:'颜色',

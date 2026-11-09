@@ -1,7 +1,7 @@
-import {WATERCOLOR_KINDS} from './watercolor-assets.mjs?v=20261108-closet-labels';
-import './watercolor-lazy.mjs';
-import {garments,shapes,shade} from './garment-shapes.mjs?v=20261108-closet-labels';
-import {COLORS} from './core.mjs?v=20261108-closet-labels';
+import {WATERCOLOR_KINDS,WATERCOLOR_REVISION} from './watercolor-assets.mjs?asset=62ff530ac2e91b77';
+import './watercolor-lazy.mjs?asset=62ff530ac2e91b77';
+import {garments,shapes,shade} from './garment-shapes.mjs?asset=62ff530ac2e91b77';
+import {COLORS} from './core.mjs?asset=62ff530ac2e91b77';
 let serial=0;
 const line=(d,c,w=1,o=1,extra='')=>`<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" opacity="${o}" stroke-linecap="round" stroke-linejoin="round" ${extra}/>`;
 const material={tee:'细棉布',polo:'珠地棉',vest:'运动针织',hoodie:'毛圈棉',cardigan:'绞花针织',bomber:'哑光斜纹',windbreaker:'轻薄织物',puffer:'蓬松绗缝',jeans:'靛蓝丹宁',chinos:'棉质斜纹',joggers:'柔软卫衣布',shorts:'棉麻混纺'};
@@ -13,7 +13,7 @@ export function refined(kind,hex){
  const channels=rgb.map(v=>({dark:Math.max(v*.38,v-.26),light:v+(1-v)*.22}));
  const matrix=channels.map((c,i)=>[...Array.from({length:3},(_,j)=>j===i?c.light-c.dark:0),0,c.dark].join(' ')).join(' ')+' 0 0 0 1 0';
  const name=kind==='longtee'?'长袖T恤':garments.find(g=>g.id===kind)?.name||'衣物';
- return `<svg class="refined-art" viewBox="-26 -26 365.5 365.5" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${name}，水彩款式示意"><defs><filter id="${id}" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="${matrix}"/></filter></defs><g filter="url(#${id})"><image width="${cell}" height="${cell}" data-watercolor-src="./watercolor-a-${kind}.svg"/></g></svg>`;
+ return `<svg class="refined-art" viewBox="-26 -26 365.5 365.5" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${name}，水彩款式示意"><defs><filter id="${id}" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="${matrix}"/></filter></defs><g filter="url(#${id})"><image width="${cell}" height="${cell}" data-watercolor-src="./watercolor-a-${kind}.svg?asset=${WATERCOLOR_REVISION}"/></g></svg>`;
 }
 function vectorRefined(kind,hex,view='0 0 320 300'){
  const id=`r${++serial}`,{d,details:baseDetails}=shapes(kind),dark=shade(hex,-.38),ink=shade(hex,-.55),light=shade(hex,.55);

@@ -1,4 +1,4 @@
-import {normalizeAiAdviceList} from './ai-advice.mjs?v=20261108-closet-labels';
+import {normalizeAiAdviceList} from './ai-advice.mjs?asset=62ff530ac2e91b77';
 export const CATEGORY_TREE = {
   '上装':['T恤','衬衫','背心','针织衫','开衫','卫衣','薄外套','厚外套','西装','其他上装'],
   '下装':['牛仔裤','休闲裤','西裤','运动裤','工装裤','短裤','半身裙','其他下装'],

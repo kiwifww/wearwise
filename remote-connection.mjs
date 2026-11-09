@@ -1,3 +1,5 @@
+export function cleanEntryURL({pathname,search='',hash=''}){const params=new URLSearchParams(search);for(const key of ['v','art','flow','ui'])params.delete(key);const query=params.toString();return pathname+(query?'?'+query:'')+hash;}
+function cleanAddress(){const next=cleanEntryURL(location);if(next!==location.pathname+location.search+location.hash)history.replaceState(history.state??null,'',next);}
 const KEY='wearwise-computer-connection-v1';
 let pairingProblem='';
 export function connectionProblem(){return pairingProblem;}
@@ -11,7 +13,7 @@ export function saveConnection(value){const clean=validateConnection(value),enco
 export function clearConnection(){localStorage.removeItem(KEY);}
 export function connectFromFragment(){
   const values=new URLSearchParams(location.hash.slice(1));if(!values.has('pair'))return false;
-  try{saveConnection({origin:values.get('pair'),token:values.get('access')});return true;}finally{history.replaceState(null,'',location.pathname+location.search+'#shopping');}
+  try{saveConnection({origin:values.get('pair'),token:values.get('access')});return true;}finally{history.replaceState(null,'',cleanEntryURL({...location,pathname:location.pathname,search:location.search,hash:'#shopping'}));}
 }
 export async function computerAPI(path,body,{fetcher=(...args)=>globalThis.fetch(...args),signal}={}){
   const c=readConnection();if(!c)throw Error('首次请用手机扫描电脑准备页的“网站配对”二维码');
@@ -20,8 +22,8 @@ export async function computerAPI(path,body,{fetcher=(...args)=>globalThis.fetch
   const value=await response.json();if(!response.ok)throw Error(response.status===401?'电脑配对已失效，请重新扫描网站配对码':value.error||'电脑服务暂不可用');return value;
 }
 export function acceptPairingFragment(){
-  if(!new URLSearchParams(location.hash.slice(1)).has('pair'))return false;
-  try{connectFromFragment();}catch(e){pairingProblem=e.message;history.replaceState(null,'',location.pathname+location.search+'#information');}
+  if(!new URLSearchParams(location.hash.slice(1)).has('pair')){cleanAddress();return false;}
+  try{connectFromFragment();}catch(e){pairingProblem=e.message;history.replaceState(null,'',cleanEntryURL({...location,pathname:location.pathname,search:location.search,hash:'#information'}));}
   if(typeof window!=='undefined')window.dispatchEvent(new Event('wearwise-connection-change'));
   return true;
 }

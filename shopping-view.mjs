@@ -1,7 +1,7 @@
-import {mobileEntryView} from './mobile-ai-entry.mjs?v=20261108-closet-labels';
-import {direction,itemRecord} from './core.mjs?v=20261108-closet-labels';
-import {aiAdviceView} from './ai-advice.mjs?v=20261108-closet-labels';
-import {heading,icon,image,tags} from './wardrobe-view.mjs?v=20261108-closet-labels';
+import {mobileEntryView} from './mobile-ai-entry.mjs?asset=62ff530ac2e91b77';
+import {direction,itemRecord} from './core.mjs?asset=62ff530ac2e91b77';
+import {aiAdviceView} from './ai-advice.mjs?asset=62ff530ac2e91b77';
+import {heading,icon,image,tags} from './wardrobe-view.mjs?asset=62ff530ac2e91b77';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=i=>i.price===''||i.price==null?'未记录价格':(i.currency==='CNY'?'¥':esc(i.currency)+' ')+Number(i.price).toLocaleString('zh-CN');
 const writes=new Set(['new-direction','add-candidate','edit-plan','plan-direction','plan-candidate','complete-plan','cancel-plan']);

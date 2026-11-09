@@ -1,5 +1,5 @@
-import {aiAdviceView} from './ai-advice.mjs?v=20261108-closet-labels';
-import {computerAPI,readConnection,clearConnection,saveConnection,connectionProblem} from './remote-connection.mjs?v=20261108-closet-labels';
+import {aiAdviceView} from './ai-advice.mjs?asset=62ff530ac2e91b77';
+import {computerAPI,readConnection,clearConnection,saveConnection,connectionProblem} from './remote-connection.mjs?asset=62ff530ac2e91b77';
 export const onlineView=(mode='advice')=>`<wearwise-online mode="${mode}"></wearwise-online>`;
 const id=()=>crypto.randomUUID();
 const weekStatus=b=>b.weeklyLimit!=null?`本周已用 ${b.weeklyUsed} / ${b.weeklyLimit} 次，剩余 ${b.weeklyRemaining} 次；每周一零点（北京时间）重置。失败占一次，不自动重连或重试AI请求。`:'';
